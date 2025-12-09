@@ -7,7 +7,7 @@ This interactive dashboard provides real-time insights into sales performance, p
 The dashboard consists of four main views, each providing unique analytical perspectives:
 
 #### 1️⃣ **Salesperson Performance Dashboard**
-![Salesperson Dashboard](<Salesperson Performance Dashboard.png>)
+![Salesperson Performance Dashboard](<Dashboards Images/Salesperson Performance Dashboard.png>)
 
 **Focus**: Individual sales team member analysis
 - **Primary Table**: Salesman, Team, Sales, Profit, LBS_Ratio, Profit_Ratio
@@ -16,7 +16,7 @@ The dashboard consists of four main views, each providing unique analytical pers
 - **Visual Indicators**: Checkmarks (✓) for high performers, warning icons (🟠) for attention areas
 
 #### 2️⃣ **Product Analytics Dashboard**
-![Product Dashboard](<Product Analytics Dashboard.png>)
+![Product Analytics Dashboard](<Dashboards Images/Product Analytics Dashboard.png>)
 
 **Focus**: Product-level profitability and performance
 - **Primary Table**: Product, Category, Sales, Profit, LBS_Ratio, Profit_Ratio
@@ -26,7 +26,7 @@ The dashboard consists of four main views, each providing unique analytical pers
 - **Products Include**: White Choc, Spicy Special Slims, Smooth Silky Salty, Raspberry Choco, Peanut Butter Cubes, and more
 
 #### 3️⃣ **Geographic Sales Dashboard**
-![Geographic Dashboard](<Geographic Sales Dashboard.png>)
+![Geographic Sales Dashboard](<Dashboards Images/Geographic Sales Dashboard.png>)
 
 **Focus**: Country-wise sales distribution and market analysis
 - **Primary Visual**: Interactive pie chart showing sales by countries
@@ -41,7 +41,7 @@ The dashboard consists of four main views, each providing unique analytical pers
 - **Key Insights**: Market share by country, revenue distribution, growth opportunities
 
 #### 4️⃣ **Country-Filtered Dashboard** (Australia Example)
-![Country-Filtered Dashboard](<Country-Filtered Dashboard.png>)
+![Country-Filtered Dashboard](<Dashboards Images/Country-Filtered Dashboard.png>)
 
 **Focus**: Deep-dive analysis for specific markets
 - **Example**: Australia market view
