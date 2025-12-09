@@ -1,0 +1,43 @@
+table D_Employees
+	lineageTag: 38573e98-d89d-4787-b5fc-44d7313c1a18
+
+	column Sales_Emp
+		dataType: string
+		lineageTag: d6b75038-a4fe-49b0-bf09-45fe41e71203
+		summarizeBy: none
+		sourceColumn: Sales_Emp
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sales_Team
+		dataType: string
+		lineageTag: 9d7d914d-4094-4e1c-8135-c5bbe1849f1c
+		summarizeBy: none
+		sourceColumn: Sales_Team
+
+		annotation SummarizationSetBy = Automatic
+
+	column SPID
+		dataType: string
+		lineageTag: 875e9c59-4eaa-448e-bf47-3a16f943c3d0
+		summarizeBy: none
+		sourceColumn: SPID
+
+		annotation SummarizationSetBy = Automatic
+
+	partition D_Employees = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\nagas\Downloads\Choco Company Data.xlsx"), null, true),
+				    Employees_Sheet = Source{[Item="Employees",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Employees_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Sales_person", type text}, {"Team", type text}, {"SPID", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type1",{{"Sales_person", "Sales_Emp"}, {"Team", "Sales_Team"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

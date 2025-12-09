@@ -1,0 +1,50 @@
+table 'Measure Selector'
+	lineageTag: 9a3491cc-8301-4273-8d77-2ba5cb7be8be
+
+	column 'Measure Selector'
+		lineageTag: b2c5eae3-5213-44a5-9e3f-3b5cccae1ec7
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Measure Selector Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Measure Selector Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Measure Selector Fields'
+		isHidden
+		lineageTag: 5daac674-1d86-4617-96cc-231eb9695a22
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Measure Selector Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Measure Selector Order'
+		isHidden
+		formatString: 0
+		lineageTag: 3a52fde3-51f4-4b0c-b72f-8e24efca2da2
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Measure Selector' = calculated
+		mode: import
+		source =
+				{
+				    ("Sales", NAMEOF('_Measures'[M_Total_Sales]), 0),
+				    ("Profit", NAMEOF('_Measures'[M_Total_Profit]), 1),
+				    ("Shipments", NAMEOF('_Measures'[M_Total_shipments]), 2),
+				    ("LBS_Count", NAMEOF('_Measures'[M_LBS_Count]), 3)
+				}
+
+	annotation PBI_Id = 6822815ab3254029be9f812b8e764045
+

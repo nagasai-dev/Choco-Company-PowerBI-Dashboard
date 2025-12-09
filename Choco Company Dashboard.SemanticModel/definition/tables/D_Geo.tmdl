@@ -1,0 +1,44 @@
+table D_Geo
+	lineageTag: 832668fe-131b-4e2f-acd6-3481d851c083
+
+	column Countries
+		dataType: string
+		lineageTag: e54ae77c-7061-49a8-98dd-6b0f53387d13
+		summarizeBy: none
+		sourceColumn: Countries
+
+		annotation SummarizationSetBy = Automatic
+
+	column Region
+		dataType: string
+		lineageTag: 3532ce15-8bd8-4248-ad1c-15aa6ee2dac7
+		summarizeBy: none
+		sourceColumn: Region
+
+		annotation SummarizationSetBy = Automatic
+
+	column GID
+		dataType: string
+		lineageTag: f9d7eeaa-3aea-4bb6-b6ea-85373a10ce2f
+		summarizeBy: none
+		sourceColumn: GID
+
+		annotation SummarizationSetBy = Automatic
+
+	partition D_Geo = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\nagas\Downloads\Choco Company Data.xlsx"), null, true),
+				    Geo_Sheet = Source{[Item="Geo",Kind="Sheet"]}[Data],
+				    #"Changed Type" = Table.TransformColumnTypes(Geo_Sheet,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Geo", type text}, {"Region", type text}, {"GID", type text}}),
+				    #"Renamed Columns" = Table.RenameColumns(#"Changed Type1",{{"Geo", "Countries"}})
+				in
+				    #"Renamed Columns"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

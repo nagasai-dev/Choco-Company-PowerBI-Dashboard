@@ -1,0 +1,72 @@
+table D_Calendar
+	lineageTag: fdabf852-3385-4514-97bb-1a8d40d690f1
+	dataCategory: Time
+
+	column Cal_Date
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: 2b32348b-6aa8-4635-a5f5-f052efeba3f9
+		summarizeBy: none
+		sourceColumn: Cal_Date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 5aba2c6b-bcef-4338-aec4-74187c31177f
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: int64
+		formatString: 0
+		lineageTag: 66ec352b-80bb-459d-ae99-a0232a9555a8
+		summarizeBy: sum
+		sourceColumn: Month
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name'
+		dataType: string
+		lineageTag: 8dc5d74b-1526-442e-ad50-e0b42633364b
+		summarizeBy: none
+		sourceColumn: Month Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Start of Month'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: fe09a7e6-7fe5-4768-a8a5-7a3788bceb8a
+		summarizeBy: none
+		sourceColumn: Start of Month
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition D_Calendar = m
+		mode: import
+		source =
+				let
+				    Source = List.Dates(#date(2023,1,1), 365*2, #duration(1,0,0,0)),
+				    #"Converted to Table" = Table.FromList(Source, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Renamed Columns" = Table.RenameColumns(#"Converted to Table",{{"Column1", "Cal_Date"}}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Renamed Columns",{{"Cal_Date", type date}}),
+				    #"Inserted Year" = Table.AddColumn(#"Changed Type", "Year", each Date.Year([Cal_Date]), Int64.Type),
+				    #"Inserted Month" = Table.AddColumn(#"Inserted Year", "Month", each Date.Month([Cal_Date]), Int64.Type),
+				    #"Inserted Month Name" = Table.AddColumn(#"Inserted Month", "Month Name", each Date.MonthName([Cal_Date]), type text),
+				    #"Inserted Start of Month" = Table.AddColumn(#"Inserted Month Name", "Start of Month", each Date.StartOfMonth([Cal_Date]), type date)
+				in
+				    #"Inserted Start of Month"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,16 @@
+relationship AutoDetected_9c507c7c-6ab1-4142-966c-04e8944a3639
+	fromColumn: F_Shipments.PID
+	toColumn: D_Products.PID
+
+relationship AutoDetected_2f104925-4df2-4e9b-8bb0-c7c26aafbd0e
+	fromColumn: F_Shipments.SPID
+	toColumn: D_Employees.SPID
+
+relationship AutoDetected_0f375328-06b1-405d-9e9f-16b8b08f80a9
+	fromColumn: F_Shipments.GID
+	toColumn: D_Geo.GID
+
+relationship 5cc059a0-bbe8-7869-9997-781f964a7b22
+	fromColumn: F_Shipments.Shipdate
+	toColumn: D_Calendar.Cal_Date
+

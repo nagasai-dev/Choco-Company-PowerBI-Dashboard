@@ -1,0 +1,180 @@
+table _Measures
+	lineageTag: cf5cf17b-997c-4aa2-bf45-9e79903ad7ef
+
+	measure M_Total_shipments = COUNTROWS(F_Shipments)
+		formatString: 0
+		lineageTag: ebbf84a2-0f71-423d-b120-13ff1e47c113
+
+	measure M_Total_Boxes = SUM((F_Shipments[Boxes]))
+		formatString: 0
+		lineageTag: ec750e36-27ec-45fa-b75e-603f26d8a7a7
+
+	measure M_Total_Sales = SUM(F_Shipments[Amount])
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 6c24eb1a-21a9-48b0-87d5-aa8a7afe5b30
+
+	measure M_Total_Profit = SUM(F_Shipments[Proft])
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: a793dc8e-3e3f-4b79-af91-bd4e8239fe71
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure M_Boxes_per_shipment = [M_Total_Boxes] / [M_Total_shipments]
+		formatString: #,0.0
+		lineageTag: 87eda8fb-9490-4425-8d85-905b7260e433
+
+	measure M_Profit_Ratio = DIVIDE([M_Total_Profit] , [M_Total_Sales] , 0)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 67cd7d86-9eca-460d-b60e-9b6a4a716b75
+
+	measure M_LBS_Count = CALCULATE([M_Total_shipments] , F_Shipments[Boxes] < 50)
+		formatString: 0
+		lineageTag: 37269536-30e9-4479-aee3-3c55cb956d4f
+
+	measure M_LBS_Ratio = DIVIDE([M_LBS_Count] , [M_Total_shipments])
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 61b62780-dc8a-4f5d-aab9-ab6b9589bdf1
+
+	measure M_Sales_Target = 2000000
+		formatString: 0
+		lineageTag: 1456d496-97f3-4c62-83bf-3f4c39cc004a
+
+	measure M_Performance_Indicator = ```
+			if([M_Total_Sales] > [M_Sales_Target], 2, 
+			                                                            IF([M_Total_Sales] > 0.8 * [M_Sales_Target],1,0))
+			```
+		formatString: 0
+		lineageTag: f3da7020-5452-4579-a3e3-0649acb6fbf2
+
+	measure M_Prev_Month_Sales = CALCULATE([M_Total_Sales],PREVIOUSMONTH(D_Calendar[Cal_Date]))
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 3a389afe-0add-46d0-ae98-d67905cdec6b
+
+	measure M_Latest_Month = LASTDATE(D_Calendar[Start of Month])
+		formatString: General Date
+		lineageTag: 4a89292a-d9d8-438b-a3cb-d9abe6c8bb90
+
+	measure M_Latest_Month_Sale = ```
+			
+			  VAR latest_month = [M_Latest_Month]
+			RETURN
+			    CALCULATE([M_Total_Sales],D_Calendar[Start of Month]=latest_month)
+			```
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 32ac01da-e13f-44ba-a232-38026bd9be54
+
+	measure M_MOM_Sales_(%) = ```
+			
+			    VAR td = [M_Latest_Month]
+			    VAR tms = [M_Latest_Month_Sale]
+			    VAR pms = CALCULATE([M_Total_Sales],
+			                            D_Calendar[Start of Month] = EDATE(td,-1))
+			
+			    return
+			        DIVIDE( (tms - pms) , pms, 0)
+			```
+		formatString: 0%;-0%;0%
+		lineageTag: 9f7fe13d-7ca9-48c7-9179-9853ce9a32f7
+
+	measure M_Prev_Month_Profit = CALCULATE([M_Total_Profit],PREVIOUSMONTH(D_Calendar[Cal_Date]))
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 4d9885e5-db7c-4846-b04f-636d1620be2c
+
+	measure M_Latest_Month_Profit =
+			
+			VAR latest_month = [M_Latest_Month]
+			RETURN
+			CALCULATE([M_Total_Profit],D_Calendar[Start of Month]=latest_month)
+		formatString: \$#,0;(\$#,0);\$#,0
+		lineageTag: 32ab1db4-813e-4337-8ba0-27e2a8a3ad36
+
+	measure M_MOM_Profit(%) =
+			
+			var td = [M_Latest_Month]
+			var tmp = [M_Latest_Month_Profit]
+			var pmp = CALCULATE([M_Total_Profit],D_Calendar[Start of Month] = EDATE(td,-1))
+			RETURN
+			    DIVIDE((tmp-pmp),pmp,0)
+		formatString: 0%;-0%;0%
+		lineageTag: b0761eca-6c78-43ae-99bd-00dd3575d33e
+
+	measure M_Prev_Month_Shipments = CALCULATE([M_Total_shipments],PREVIOUSMONTH(D_Calendar[Cal_Date]))
+		formatString: 0
+		lineageTag: 6524ef93-3f96-401c-88a5-0d373449f1af
+
+	measure M_Latest_Month_Shipments =
+			
+			VAR latest_month = [M_Latest_Month]
+			RETURN
+			CALCULATE([M_Total_shipments],D_Calendar[Start of Month]=latest_month)
+		formatString: 0
+		lineageTag: c8bbdd35-ee90-4581-acbd-a382d2c99b69
+
+	measure M_MOM_Shipments(%) =
+			
+			VAR td = [M_Latest_Month]
+			VAR tmsh = [M_Latest_Month_Shipments]
+			VAR pmsh = CALCULATE([M_Total_shipments],D_Calendar[Start of Month] = EDATE(td,-1))
+			RETURN
+			    DIVIDE((tmsh-pmsh),pmsh,0)
+		formatString: 0%;-0%;0%
+		lineageTag: eec21431-fd4e-44aa-a56b-0ec819dc5869
+
+	measure M_Prev_Month_Boxes = CALCULATE([M_Total_Boxes],PREVIOUSMONTH(D_Calendar[Cal_Date]))
+		formatString: 0
+		lineageTag: b98f9067-49c7-4fa6-92c0-0469126077aa
+
+	measure M_Latest_Month_Boxes =
+			
+			VAR latest_month = [M_Latest_Month]
+			RETURN
+			CALCULATE([M_Total_Boxes],D_Calendar[Start of Month]=latest_month)
+		formatString: 0
+		lineageTag: 180bc7a4-33c0-4cf7-80f9-59733d595b22
+
+	measure M_MOM_Boxes(%) =
+			
+			VAR td = [M_Latest_Month]
+			VAR tmb = [M_Latest_Month_Boxes]
+			VAR pmb = CALCULATE([M_Total_Boxes],D_Calendar[Start of Month]=EDATE(td,-1))
+			RETURN
+			    DIVIDE((tmb-pmb),pmb,0)
+		formatString: 0%;-0%;0%
+		lineageTag: ea9e324b-f990-4acd-892f-25f056964dee
+
+	measure M_Prev_Month_LBS = CALCULATE([M_LBS_Count],PREVIOUSMONTH(D_Calendar[Cal_Date]))
+		formatString: 0
+		lineageTag: 825a98ae-d26a-43fe-a365-0e91c0cf0463
+
+	measure M_Latest_Month_LBS =
+			
+			VAR latest_month = [M_Latest_Month]
+			RETURN
+			CALCULATE([M_LBS_Count],D_Calendar[Start of Month]=latest_month)
+		formatString: 0
+		lineageTag: 63a2ae9b-4096-46b2-9ca6-2a671b104093
+
+	measure M_MOM_LBS(%) =
+			
+			VAR td = [M_Latest_Month]
+			VAR tmlbs = [M_Latest_Month_LBS]
+			VAR pmlbs = CALCULATE([M_LBS_Count],D_Calendar[Start of Month]=EDATE(td,-1))
+			RETURN
+			    DIVIDE((tmlbs-pmlbs),pmlbs,0)
+		formatString: 0%;-0%;0%
+		lineageTag: 857262da-7359-4c6b-9ac6-ea93a07a269a
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,28 @@
+model Model
+	culture: en-IN
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["D_Products","F_Shipments","D_Geo","D_Employees","_Measures","D_Calendar"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table D_Products
+ref table F_Shipments
+ref table D_Geo
+ref table D_Employees
+ref table _Measures
+ref table D_Calendar
+ref table 'Measure Selector'
+
+ref role 'America Region'
+ref role 'APAC Region'
+ref role 'Europe Region'
+
+ref cultureInfo en-IN
+

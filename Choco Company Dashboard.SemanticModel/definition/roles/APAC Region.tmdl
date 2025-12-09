@@ -1,0 +1,7 @@
+role 'APAC Region'
+	modelPermission: read
+
+	tablePermission D_Geo = [Region] == "APAC"
+
+	annotation PBI_Id = e5609c484c8c456ebed51c54410b9271
+

@@ -1,0 +1,7 @@
+role 'America Region'
+	modelPermission: read
+
+	tablePermission D_Geo = [Region] == "America"
+
+	annotation PBI_Id = fa8c513a964549098da174e333ac78a2
+

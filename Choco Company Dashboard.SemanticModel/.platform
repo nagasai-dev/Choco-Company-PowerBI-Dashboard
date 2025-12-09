@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Choco Company Dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "8121c6e7-4e03-4588-8470-532d3b1c62f6"
+  }
+}

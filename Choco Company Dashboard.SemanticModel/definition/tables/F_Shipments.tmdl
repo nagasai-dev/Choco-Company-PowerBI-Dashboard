@@ -1,0 +1,158 @@
+table F_Shipments
+	lineageTag: 2dd3f078-6a33-447b-b28a-8b4318f34f8e
+
+	column ShipmentID
+		dataType: string
+		lineageTag: a3fbb3a6-ecab-4824-af62-1db268ab82d6
+		summarizeBy: none
+		sourceColumn: ShipmentID
+
+		annotation SummarizationSetBy = Automatic
+
+	column SPID
+		dataType: string
+		isHidden
+		lineageTag: 20e6c813-026a-4397-a9f3-564e4360b2a1
+		summarizeBy: none
+		sourceColumn: SPID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column PID
+		dataType: string
+		lineageTag: 8686e918-d41c-4f58-90dd-baa96603bda6
+		summarizeBy: none
+		sourceColumn: PID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column GID
+		dataType: string
+		isHidden
+		lineageTag: 6d3fae99-959c-4b21-bd40-b74e73046a7f
+		summarizeBy: none
+		sourceColumn: GID
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Shipdate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 129dfaad-7591-49b4-a960-684b4b549266
+		summarizeBy: none
+		sourceColumn: Shipdate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Amount
+		dataType: double
+		lineageTag: 61f56dac-613f-4277-b282-a0e3fd7a90bb
+		summarizeBy: sum
+		sourceColumn: Amount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Boxes
+		dataType: int64
+		formatString: 0
+		lineageTag: 1f77248e-a9cc-4f66-8f12-c4db9da47208
+		summarizeBy: sum
+		sourceColumn: Boxes
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"F_Shipments","TableItemName":"Bins (50 boxes)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column Order_Status
+		dataType: string
+		lineageTag: c21eac20-3546-40de-b6ae-f5c74ebc25ab
+		summarizeBy: none
+		sourceColumn: Order_Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Cost = F_Shipments[Boxes] * RELATED(D_Products[Cost_per_box])
+		lineageTag: 2b66fe49-8541-4fde-bf0a-6bc207d6916e
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Proft = F_Shipments[Amount] - F_Shipments[Cost]
+		lineageTag: 739fe581-64e8-4b5b-a37f-25a28c79bbd7
+		summarizeBy: sum
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Percentage of profit' = DIVIDE([M_Total_Profit] , [M_Total_Sales] , 0)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 769e28a0-e359-483a-9fa4-4b7e9df9d925
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Bins (50 boxes)' =
+			IF(
+				ISBLANK('F_Shipments'[Boxes]),
+				BLANK(),
+				INT('F_Shipments'[Boxes] / 50) * 50
+			)
+		formatString: 0
+		lineageTag: c7108312-c994-4948-a298-9cca7ad58c2e
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "F_Shipments"
+				          }
+				        },
+				        "Property": "Boxes"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 50.0,
+				      "unit": 0
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"f","Entity":"F_Shipments"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"f"}},"Property":"Boxes"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"f"}},"Property":"Boxes"}},"Size":50.0}}}}
+
+		annotation SummarizationSetBy = Automatic
+
+	partition F_Shipments = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\nagas\Downloads\Choco Company Data.xlsx"), null, true),
+				    Shipments_Sheet = Source{[Item="Shipments",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(Shipments_Sheet, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"ShipmentID", type text}, {"SPID", type text}, {"PID", type text}, {"GID", type text}, {"Shipdate", type date}, {"Amount", type number}, {"Boxes", Int64.Type}, {"Order_Status", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
